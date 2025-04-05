@@ -17,6 +17,7 @@ O algoritmo de Berkeley é uma técnica de sincronização de tempo **sem servid
 ## 🧪 Exemplo de Funcionamento
 
 - Horários iniciais:
+
 Cliente 1: 10:30
 
 Cliente 2: 12:00
@@ -24,6 +25,7 @@ Cliente 2: 12:00
 Servidor: 11:00
 
 🧮 Ajustes:
+
 Cliente 1: +40 minutos → 11:10
 
 Cliente 2: −50 minutos → 11:10
@@ -48,6 +50,7 @@ API de Data/Hora: java.time.LocalTime
 Threads para lidar com múltiplas conexões simultâneas
 
 📌 Observações
+
 A comunicação é feita via localhost (127.0.0.1), ideal para testes locais.
 
 Os relógios dos clientes são simulados com horários aleatórios para fins de demonstração e testes.
