@@ -34,7 +34,7 @@ public class Servidor {
         System.out.println("[Servidor] Cliente conectado: " + cliente.getInetAddress().getHostAddress());
     }
 
-    public void sincronizarRelogio() throws IOException {
+    public List<Socket> sincronizarRelogio() throws IOException {
         List<Pair<Socket, Long>> diferencas = capturarDiferencaEntreServidorEClientes();
 
         List<Long> diferencasRelogio = diferencas.stream().map(Pair::getRight).collect(Collectors.toList());
@@ -44,9 +44,9 @@ public class Servidor {
         System.out.println("[Servidor] Media: " + media);
         enviarAjustesParaOsClientes(diferencas, media);
 
-        for (Socket cliente : clientes) cliente.close();
+
         System.out.println("[Servidor] The end!");
-        servidor.close();
+        return clientes;
     }
 
     private void ajustarHoraServidor(long media) {
@@ -92,5 +92,13 @@ public class Servidor {
             }
         }
         return diferencas;
+    }
+
+    public LocalTime getHoraServidor() {
+        return horaServidor;
+    }
+
+    public ServerSocket getServerSocket() {
+        return servidor;
     }
 }

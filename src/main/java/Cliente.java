@@ -6,35 +6,46 @@ import java.net.Socket;
 import java.time.LocalTime;
 import java.util.Random;
 
-public class Cliente extends Socket {
+public class Cliente implements Runnable {
 
-    public static void main(String[] args) throws IOException {
+    @Override
+    public void run() {
         String host = "localhost";
         int porta = 9999;
-        Socket socket = new Socket(host, porta);
-        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        Socket socket = null;
+        try {
+            socket = new Socket(host, porta);
 
-        String horaServidorStr = in.readLine();
-        System.out.println(horaServidorStr);
-        LocalTime horaServidor = LocalTime.parse(horaServidorStr);
-        System.out.println("[Cliente] Hora servidor:" + horaServidor);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
-        // Simula hora do cliente (pode adicionar offset para teste)
-        LocalTime horaCliente = gerarHoraLocal();
+            String horaServidorStr = in.readLine();
+            LocalTime horaServidor = LocalTime.parse(horaServidorStr);
 
-        enviarDiferencaParaOServer(horaServidor, horaCliente, out);
+            // Simula hora do cliente (pode adicionar offset para teste)
+            LocalTime horaCliente = gerarHoraLocal();
 
-        String ajusteStr = in.readLine();
-        long ajuste = Long.parseLong(ajusteStr);
-        System.out.println("[Cliente] Ajuste recebido: " + ajuste + " segundos");
+            enviarDiferencaParaOServer(horaServidor, horaCliente, out);
 
-        // Aplica ajuste
-        LocalTime novaHora = horaCliente.plusSeconds(ajuste);
-        System.out.println("[Cliente] Nova hora ajustada: " + novaHora);
+            String ajusteStr = in.readLine();
+            long ajuste = Long.parseLong(ajusteStr);
+            System.out.println("[Cliente] Ajuste recebido: " + ajuste + " segundos");
 
-        socket.close();
+            // Aplica ajuste
+            LocalTime novaHora = horaCliente.plusSeconds(ajuste);
+            System.out.println("[Cliente] Nova hora ajustada: " + novaHora);
+
+            out.println(novaHora.toString());
+
+            socket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
+//    public static void main(String[] args) throws IOException {
+//
+
+//    }
 
     private static void enviarDiferencaParaOServer(LocalTime horaServidor, LocalTime horaCliente, PrintWriter out) {
         // Calcula diferença (cliente - servidor) em segundos
